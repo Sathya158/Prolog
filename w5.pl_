@@ -1,0 +1,79 @@
+c([0,0]).
+c([0,1]).
+c([0,2]).
+c([1,0]).
+c([1,1]).
+c([1,2]).
+c([2,0]).
+c([2,1]).
+c([2,2]).
+o(1,[X,Y],[X,Y1],[X,Y2]):- Y1 is Y+1, Y2 is Y+2.
+o(2,[X,Y],[X1,Y],[X2,Y]):- X1 is X+1, X2 is X+2.
+o(3,[X,Y],[X1,Y],[X,Y1]):- X1 is X+1, Y1 is Y+1.
+o(4,[X,Y],[X1,Y],[X,Y1]):- X1 is X+1, Y1 is Y-1.
+o(5,[X,Y],[X,Y1],[X1,Y]):- X1 is X-1, Y1 is Y+1.
+o(6,[X,Y],[X,Y1],[X1,Y]):- X1 is X-1, Y1 is Y-1.
+
+rem([],_,[]).
+rem([H|L1],L2,L3):- member(H,L2), rem(L1,L2,L3).
+rem([H|L1],L2,[H|L3]):- not(member(H,L2)), rem(L1,L2,L3).
+
+
+fill(R):- findall(X, c(X), XL),
+    fill1(XL,R1),sort(R1,R).
+
+fill1([],[]).
+fill1(XL,[[ID,C1,C2,C3]|R]):-member(C1, XL), o(ID,C1,C2,C3),
+    member(C2,XL), member(C3,XL),
+     rem(XL,[C1,C2,C3],XLNew),
+         fill1(XLNew,R).
+
+
+
+
+
+
+
+f([0,0]).
+f([1,0]).
+f([2,0]).
+f([0,1]).
+f([1,1]).
+f([2,1]).
+f([0,2]).
+f([1,2]).
+f([2,2]).
+
+move([X,Y],[X1,Y1]):-
+    X1 is X-1, Y1 is Y+2.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X-2, Y1 is Y+1.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X+2, Y1 is Y+1.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X+1, Y1 is Y+2.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X-1, Y1 is Y-2.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X+1, Y1 is Y-2.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X-2, Y1 is Y-1.
+
+move([X,Y],[X1,Y1]):-
+    X1 is X+2, Y1 is Y-1.
+
+
+h_move(X,Y,P):-h_move1(X,Y,[],P).
+
+h_move1(X,X,A,P):-reverse([X|A],P).
+
+h_move1(X,Y,A,P):- move(X,Z), f(Z), not(member(Z,A)),h_move1(Z,Y,[X|A],P).
+
+
+
